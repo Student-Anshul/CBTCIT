@@ -1,29 +1,63 @@
+import tkinter as tk
 import random
 
-Methods = {'R':0,'P':1,'S':2,}
-YesNo = 'Y'
-
-while(YesNo=='Y'):
-    try:
-        Computer = random.randint(0,2)
-        Player = input("Select your choice between Rock(R),Paper(P),Scissor(S): ").upper()
-        PlayerVal = Methods[Player]
+class RockPaperScissors(tk.Tk):
+    def __init__(self):
+        super().__init__()
+        self.title("Rock-Paper-Scissors Game")
+        self.geometry("400x300")
+        self.configure(bg="lightblue")
         
-        if((Computer==0) and (PlayerVal==1)):
-            print("Its Paper You Wins!")
-        elif((Computer==1) and (PlayerVal==2)):
-            print("Its Scissor You Wins!")
-        elif((Computer==2) and (PlayerVal==0)):
-            print("Its Rock You Wins!")
-        elif((Computer==1) and (PlayerVal==0)):
-            print("Its Rock You Loose!")
-        elif((Computer==2) and (PlayerVal==1)):
-            print("Its Paper You Loose!")
-        elif((Computer==0) and (PlayerVal==2)):
-            print("Its Scissor You Loose!")
+        self.methods = {'R': 0, 'P': 1, 'S': 2}
+        self.choices = ["Rock", "Paper", "Scissor"]
+        
+        self.create_widgets()
+    
+    def create_widgets(self):
+        tk.Label(self, text="Rock-Paper-Scissors Game", font=("Arial", 16), bg="lightblue").pack(pady=10)
+        
+        tk.Label(self, text="Choose one:", font=("Arial", 12), bg="lightblue").pack(pady=5)
+        
+        self.choice_var = tk.StringVar()
+        self.choice_var.set("R")
+        
+        choices_frame = tk.Frame(self, bg="lightblue")
+        choices_frame.pack(pady=5)
+        
+        for text, value in self.methods.items():
+            tk.Radiobutton(choices_frame, text=self.choices[value], variable=self.choice_var, value=text, font=("Arial", 12), bg="lightblue").pack(side=tk.LEFT, padx=10)
+        
+        tk.Button(self, text="Play", command=self.play_game, font=("Arial", 12), bg="white", fg="black").pack(pady=10)
+        
+        self.result_label = tk.Label(self, text="", font=("Arial", 12), bg="lightblue")
+        self.result_label.pack(pady=10)
+        
+        self.play_again_button = tk.Button(self, text="Play Again", command=self.reset_game, font=("Arial", 12), bg="white", fg="black")
+        self.play_again_button.pack(pady=10)
+        self.play_again_button.config(state=tk.DISABLED)
+    
+    def play_game(self):
+        computer_choice = random.randint(0, 2)
+        player_choice = self.choice_var.get()
+        
+        player_val = self.methods[player_choice]
+        
+        result = ""
+        if (computer_choice == 0 and player_val == 1) or (computer_choice == 1 and player_val == 2) or (computer_choice == 2 and player_val == 0):
+            result = f"It's {self.choices[computer_choice]}! You Win!"
+        elif (computer_choice == 1 and player_val == 0) or (computer_choice == 2 and player_val == 1) or (computer_choice == 0 and player_val == 2):
+            result = f"It's {self.choices[computer_choice]}! You Lose!"
         else:
-            print("Draw")
-        YesNo = input("Are you intent on continue the game(Y/N): ").upper()
-    except Exception as e:
-        print(f"Error... {e}")
-        print("Please try again")
+            result = f"It's {self.choices[computer_choice]}! It's a Draw!"
+        
+        self.result_label.config(text=result)
+        self.play_again_button.config(state=tk.NORMAL)
+    
+    def reset_game(self):
+        self.result_label.config(text="")
+        self.choice_var.set("R")
+        self.play_again_button.config(state=tk.DISABLED)
+
+if __name__ == "__main__":
+    app = RockPaperScissors()
+    app.mainloop()
