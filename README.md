@@ -1,2 +1,2 @@
 # CBTCIT
-My first internship repository
+My Code soft internship repository
